@@ -51,8 +51,8 @@ $tag_keys = array();
 // the full history
 $min_version = 0;
 $max_version = 0;
-if (count($xml->way) > 0) {
-  $min_version = $xml->way[0]->attributes()->version;
+if (count($xml->node) > 0) {
+  $min_version = $xml->node[0]->attributes()->version;
   $max_version = $min_version;
 }
 
