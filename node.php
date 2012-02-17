@@ -42,8 +42,22 @@ $xml = simplexml_load_string($output);
 
 $nodes = array();
 $tag_keys = array();
+
+// keep track of min/max versions in this /history call as fosm may not contain
+// the full history
+$min_version = 0;
+$max_version = 0;
+if ($xml->way > 0) {
+  $min_version = $xml->way[0]->attributes()->version;
+  $max_version = $min_version;
+}
+
 foreach ($xml->node as $node_xml) {
   $version = (integer) $node_xml->attributes()->version;
+  if ($version < $min_version)
+    $min_version = $version;
+  if ($version > $max_version)
+    $max_version = $version;
   $node['version'] = $version;
   $node['lat'] = (double) $node_xml->attributes()->lat;
   $node['lon'] = (double) $node_xml->attributes()->lon;
@@ -62,6 +76,54 @@ foreach ($xml->node as $node_xml) {
   $node['tags'] = $tags;
   
   $nodes[$version] = $node;
+}
+
+// fosm didn't return the full history, so now lets get everything from version
+// 1 to $min_version - 1 from osm
+if ($min_version != 1) {
+  $min_version = $max_version;
+  $url = "http://www.openstreetmap.org/api/0.6/node/$id/history";
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERAGENT, "curl/deep_history_viewer");
+  $output = curl_exec($ch);
+
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  if($http_code != 200) {
+    print "Error retrieving history from www.osm.org: $http_code";
+    exit;
+  }
+
+  $xml = simplexml_load_string($output);
+
+  foreach ($xml->node as $node_xml) {
+    $version = (integer) $node_xml->attributes()->version;
+
+    // just grab details from versions that are not in the fosm api result, and
+    // are lower version numbers than the lowest fosm version number we found
+    if ($version < $min_version) {
+      $node['version'] = $version;
+      $node['lat'] = (double) $node_xml->attributes()->lat;
+      $node['lon'] = (double) $node_xml->attributes()->lon;
+      $node['changeset'] = (integer) $node_xml->attributes()->changeset;
+      $node['user'] = (string) $node_xml->attributes()->user;
+      $node['uid'] = (integer) $node_xml->attributes()->uid;
+      $node['time'] = (string) $node_xml->attributes()->timestamp;
+
+      $tags = array();
+      foreach ($node_xml->tag as $tag_xml) {
+        $k = (string) $tag_xml->attributes()->k;
+        $v = (string) $tag_xml->attributes()->v;
+        $tags[$k] = $v;
+        $tag_keys[$k] = true;
+      }
+      $node['tags'] = $tags;
+      
+      $nodes[$version] = $node;
+    }
+  }
 }
 ?>
 
@@ -105,6 +167,10 @@ foreach ($xml->node as $node_xml) {
     <tr>
       <td>&nbsp;</td>
       <?
+// sort ways by version number
+// if we need to grab from both fosm and osm, this will ensure the correct order
+// is displayed
+ksort($nodes);
 foreach($nodes as $n) {
   print "<td>Ver {$n['version']} [<a href='#' class='collapse'>x</a>]</td>";
 }
