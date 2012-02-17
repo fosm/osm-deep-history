@@ -59,7 +59,7 @@ if ($min_version != 1) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_USERAGENT, "curl/deep_history_viewer");
+  curl_setopt($ch, CURLOPT_USERAGENT, $UA_STRING);
   $output = curl_exec($ch);
 
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);

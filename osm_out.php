@@ -202,10 +202,10 @@ function printCopyright() {
 ";
 }
 
+$UA_STRING = "curl/deep_history_viewer";
+
 function getObject($type, $id) {
   $output = "";
-
-  $UA_STRING = "curl/deep_history_viewer";
 
   // Always try the fosm api first (because if an object was created in osm but
   // subsequently edited in fosm then it will still have the osm id)
