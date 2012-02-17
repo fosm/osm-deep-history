@@ -39,3 +39,11 @@ td {
 .undecided {
   background-color: #ff9;
 }
+
+td.fosm {
+  background-color: #98a1d4;
+}
+
+span.fosm {
+  font-weight: bold;
+}

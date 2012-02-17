@@ -179,7 +179,17 @@ if ($min_version != 1) {
 // is displayed
 ksort($nodes);
 foreach($nodes as $n) {
-  print "<td>Ver {$n['version']} [<a href='#' class='collapse'>x</a>]</td>";
+  if ($n['changeset'] >= 1000000000)
+    print "<td class='fosm'>";
+  else
+    print "<td>";
+
+  print "Ver {$n['version']} [<a href='#' class='collapse'>x</a>]";
+
+  if ($n['changeset'] >= 1000000000)
+    print " <span class='fosm'>fosm</span>";
+
+  print "</td>";
 }
       ?>
     </tr>
