@@ -221,12 +221,12 @@ function getObject($type, $id) {
 
   // try OSM if gone from api.fosm.org
   // try OSM if not found in api.fosm.org
-  if(($http_code == 410) || ($http_code == 404)) {
+  if(($http_code == 410) || ($http_code == 404) || ($http_code == 307)) {
     if ($id >= 1000000000000) {
         print "Error retrieving history\n";
         print "URL: $url\n";
         print "Response code: $http_code\n";
-        if ($http_code == 410)
+        if (($http_code == 410) || ($http_code == 307))
           print "I would normally now look at www.osm.org but the object id is too large.\n";
         exit;
     }else{
