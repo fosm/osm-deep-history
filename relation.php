@@ -30,11 +30,15 @@ if($http_code == 410) {
 
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   if($http_code != 200) {
-    print "Error retrieving history from www.osm.org: $http_code";
+    print "Error retrieving history";
+    print "URL: $url";
+    print "Response code: $http_code";
     exit;
   }
 }else if($http_code != 200) {
-  print "Error retrieving history from api.fosm.org: $http_code";
+  print "Error retrieving history";
+  print "URL: $url";
+  print "Response code: $http_code";
   exit;
 }
 
@@ -100,7 +104,9 @@ if ($min_version != 1) {
 
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   if($http_code != 200) {
-    print "Error retrieving history from www.osm.org: $http_code";
+    print "Error retrieving history";
+    print "URL: $url";
+    print "Response code: $http_code";
     exit;
   }
 
