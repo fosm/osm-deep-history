@@ -154,7 +154,10 @@ function wayLine($ways, $val, $useColor=true, $title, $link=Null) {
     $currentVal = $way[$val];
     $class = color($previousVal, $currentVal);
     if($link)
-      $ret .= "<td class='$class'><a href='$link$currentVal'>$currentVal</a></td>";
+      if(($val == "changeset") && ($currentVal >= 1000000000))
+        $ret .= "<td class='$class'><a href='http://api.fosm.org/api/0.6/changeset/$currentVal'>$currentVal</a></td>";
+      else
+        $ret .= "<td class='$class'><a href='$link$currentVal'>$currentVal</a></td>";
     else
       $ret .= "<td class='$class'>$currentVal</td>";
     $previousVal = $currentVal;
