@@ -149,7 +149,8 @@ if ($min_version != 1) {
 
 
 ?>
-
+<html>
+<? echo printCopyright() ?>
 <head>
   <title>Deep Diff of Relation #<? echo $id ?></title>
   <link rel='stylesheet' type='text/css' media='screen,print' href='style.css'/>
@@ -185,3 +186,4 @@ foreach (array_keys($relation_refs) as $key) {
     ?>
   </table>
 </body>
+</html>

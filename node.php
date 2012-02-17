@@ -132,7 +132,8 @@ if ($min_version != 1) {
   }
 }
 ?>
-
+<html>
+<? echo printCopyright() ?>
 <head>
   <title>Deep Diff of Node #<? echo $id ?></title>
   <link rel='stylesheet' type='text/css' media='screen,print' href='style.css'/>
@@ -204,3 +205,4 @@ foreach (array_keys($tag_keys) as $key) {
   <div class="reset_collapse"><!-- --></div>
   </div>
 </body>
+</html>

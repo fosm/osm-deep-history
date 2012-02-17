@@ -146,7 +146,8 @@ if ($min_version != 1) {
 }
 
 ?>
-
+<html>
+<? echo printCopyright() ?>
 <head>
   <title>Deep Diff of Way #<? echo $id ?></title>
   <link rel='stylesheet' type='text/css' media='screen,print' href='style.css'/>
@@ -224,3 +225,4 @@ foreach (array_keys($way_refs) as $ref) {
   <div class="reset_collapse"><!-- --></div>
   </div>
 </body>
+</html>

@@ -177,5 +177,26 @@ function licenseLine($ways) {
   $ret .= "</tr>\n";
   return $ret;
 }
+
+function printCopyright() {
+  print "<!--
+  This page contains data copyright OpenStreetMap and FOSM Contributors released
+  under the Creative Commons Attribution-ShareAlike 2.0 license, available at
+  http://creativecommons.org/licenses/by-sa/2.0/
+
+  Hence this document is also released under the same license.
+
+  For the full attribution details of this data please refer to both
+  http://www.openstreetmap.org/
+  http://www.fosm.org/
+
+  The code which generated this document is released under the Apache License
+  Version 2.0, http://www.apache.org/licenses/LICENSE-2.0
+
+  The code is available at
+  https://github.com/andrewharvey/osm-deep-history/tree/fosm
+-->
+";
+}
 ?>
 
