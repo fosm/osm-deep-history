@@ -201,5 +201,59 @@ function printCopyright() {
 -->
 ";
 }
+
+function getObject($type, $id) {
+  $output = "";
+
+  $UA_STRING = "curl/deep_history_viewer";
+
+  // Always try the fosm api first (because if an object was created in osm but
+  // subsequently edited in fosm then it will still have the osm id)
+  $url = "http://api.fosm.org/api/0.6/$type/$id/history";
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERAGENT, $UA_STRING);
+  $output = curl_exec($ch);
+
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+  // try OSM if gone from api.fosm.org
+  // try OSM if not found in api.fosm.org
+  if(($http_code == 410) || ($http_code == 404)) {
+    if ($id >= 1000000000000) {
+        print "Error retrieving history\n";
+        print "URL: $url\n";
+        print "Response code: $http_code\n";
+        if ($http_code == 410)
+          print "I would normally now look at www.osm.org but the object id is too large.\n";
+        exit;
+    }else{
+      $url = "http://www.openstreetmap.org/api/0.6/$type/$id/history";
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_USERAGENT, $UA_STRING);
+      $output = curl_exec($ch);
+
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      if($http_code != 200) {
+        print "Error retrieving history\n";
+        print "URL: $url\n";
+        print "Response code: $http_code\n";
+        exit;
+      }
+    }
+  }else if($http_code != 200) {
+    print "Error retrieving history\n";
+    print "URL: $url\n";
+    print "Response code: $http_code\n";
+    exit;
+  }
+
+  return $output;
+}
 ?>
 
