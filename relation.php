@@ -8,18 +8,33 @@ if(!is_numeric($_GET['id'])) {
 
 $id = $_GET['id'];
 
-$url = "http://www.openstreetmap.org/api/0.6/relation/$id/history";
+$url = "http://api.fosm.org/api/0.6/relation/$id/history";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, "curl/deep_history_viewer (http://osm.mapki.com/history/)");
+curl_setopt($ch, CURLOPT_USERAGENT, "curl/deep_history_viewer");
 $output = curl_exec($ch);
 
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-if($http_code != 200) {
-  print "Error retrieving history: $http_code";
+// try OSM if gone from api.fosm.org
+if($http_code == 410) {
+  $url = "http://www.openstreetmap.org/api/0.6/relation/$id/history";
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERAGENT, "curl/deep_history_viewer");
+  $output = curl_exec($ch);
+
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  if($http_code != 200) {
+    print "Error retrieving history from www.osm.org: $http_code";
+    exit;
+  }
+}else if($http_code != 200) {
+  print "Error retrieving history from api.fosm.org: $http_code";
   exit;
 }
 
@@ -75,10 +90,6 @@ foreach ($xml->relation as $way_xml) {
     <? echo timeLine($relations) ?>
     <? echo wayLine($relations, 'changeset', true, "Changeset#", "http://osm.org/browse/changeset/") ?>
     <? echo wayLine($relations, 'user', true, "User", "http://osm.org/user/") ?>
-    <tr>
-      <td style='background:#aaa;' colspan='<? echo count($relations) + 1 ?>'>License Status <small>(Last updated: <? echo date ("d-M-Y H:i", filemtime("users_agreed.txt")) ?>)</small></td>
-    </tr>
-<? echo licenseLine($relations) ?>
     <tr>
       <td style='background:#aaa;' colspan='<? echo count($relations) + 1 ?>'>Tags</td>
     </tr>
