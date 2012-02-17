@@ -64,9 +64,9 @@ if ($min_version != 1) {
 
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   if($http_code != 200) {
-    print "Error retrieving history";
-    print "URL: $url";
-    print "Response code: $http_code";
+    print "Error retrieving history\n";
+    print "URL: $url\n";
+    print "Response code: $http_code\n";
     exit;
   }
 
