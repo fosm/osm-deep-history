@@ -1,5 +1,17 @@
 <?
 
+function get_contents($type, $id) {
+    $server = $_GET['server'];
+    
+    if ($server == 'fosm') {
+	$url = "http://fosm.org/api/0.6/$type/$id/history";
+    } else {
+	$url = "http://www.openstreetmap.org/api/0.6/$type/$id/history";
+    }
+    $output =  file_get_contents($url);
+    return $output;
+}
+
 function color($prev, $curr) {
   if($prev == "----" and $curr == "----") {
     return "notpresent";
